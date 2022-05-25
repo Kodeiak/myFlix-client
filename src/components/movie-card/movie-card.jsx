@@ -3,12 +3,14 @@ import PropTypes from "prop-types";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
+import "./movie-card.scss";
+
 export class MovieCard extends React.Component {
   render() {
     const { movieData, onMovieClick } = this.props;
 
     return (
-      <Card>
+      <Card className="movie-card">
         <Card.Img variant="top" src={movieData.imagePath} />
         <Card.Body>
           <Card.Title>{movieData.title}</Card.Title>
