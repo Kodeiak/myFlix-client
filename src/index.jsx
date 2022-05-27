@@ -9,7 +9,7 @@ import "./index.scss";
 class MyFlixApplication extends React.Component {
   render() {
     return (
-      <Container fluid>
+      <Container fluid className="login-form">
         <MainView />
       </Container>
     );
