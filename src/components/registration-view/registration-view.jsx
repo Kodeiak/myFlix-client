@@ -4,26 +4,27 @@ import { Form, Button, Row, Col, Card, CardGroup } from "react-bootstrap";
 import axios from "axios";
 
 export function RegistrationView(props) {
-  const [ email, setEmail ] = useState("");
-  const [ birthday, setBirthday ] = useState("");
   const [ username, setUsername ] = useState("");
   const [ password, setPassword ] = useState("");
+  const [ email, setEmail ] = useState("");
+  const [ birthday, setBirthday ] = useState("");
 
   const handleRegister = e => {
     e.preventDefault();
-    console.log(email, birthday, username, password);
+    console.log(username, password, email, birthday);
     /* send a request to the server for authentication
     then call pros.onLoggIn(username) */
     axios.post("https://myflixdb-kodeiak.herokuapp.com/users", {
-        username,
-        password,
-        email,
-        birthday
+        username: username,
+        password: password,
+        email: email,
+        birthday: birthday
       }
     )
     .then(response => {
       const data = response.data;
       console.log(data);
+      alert("Registration successful. Please login.");
       // render login screen
       window.open("/", "_self"); // "_self" opens new page on current tab
     })
