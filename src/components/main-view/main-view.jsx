@@ -3,13 +3,14 @@ import axios from "axios";
 import propTypes from "prop-types";
 
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import { Row, Col, Button, Container } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 import { LoginView } from "../login-view/login-view";
 import { RegistrationView } from "../registration-view/registration-view";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 
-import { Row, Col, Button, Container } from "react-bootstrap";
 
 // create and render MainView class component from React.Component
 export class MainView extends React.Component { 
@@ -103,7 +104,7 @@ export class MainView extends React.Component {
           }} />
 
           <Route path="/register" render={() => {
-            // if (user) redirect to home
+            if (user) return <Redirect to="/" />
             return <Col md={8}>
               <RegistrationView />
             </Col>
@@ -142,6 +143,14 @@ export class MainView extends React.Component {
             if (movies.length === 0) return <div className="main-view" />
             return <Col md={8}>
               <DirectorView director={movies.find(m => m.director.name === match.params.name).director} onBackClick={() => history.goBack()} />
+            </Col>
+          }} />
+
+          {/* Profile */}
+          <Route path={`/users/${user}`} render={({history}) => {
+            if (!user) return <Redirect to="/" />
+            return <Col>
+              {/* <ProfileView user={user} onBackClick={() => history.goBack()} /> */}
             </Col>
           }} />
         </Row>
