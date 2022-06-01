@@ -9,14 +9,15 @@ import "./movie-card.scss";
 export class MovieCard extends React.Component {
   render() {
     const { movieData } = this.props;
+    // console.log(movieData);
 
     return (
       <Card className="movie-card">
-        <Card.Img variant="top" src={movieData.imagePath} />
+        {/* <Card.Img variant="top" src={movieData.imagePath} /> */}
         <Card.Body>
           <Card.Title>{movieData.title}</Card.Title>
           <Card.Text>{movieData.description}</Card.Text>
-          <Link to={`/movies/${movie._id}`}>
+          <Link to={`/movies/${movieData._id}`}>
             <Button variant="link">Open</Button>
           </Link>
         </Card.Body>
