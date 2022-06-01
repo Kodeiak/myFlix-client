@@ -10,6 +10,7 @@ import { LoginView } from "../login-view/login-view";
 import { RegistrationView } from "../registration-view/registration-view";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
+import { Navbar } from "../navbar-view/navbar-view";
 
 
 // create and render MainView class component from React.Component
@@ -47,6 +48,7 @@ export class MainView extends React.Component {
   }
 
   onLoggedOut() {
+    console.log("signing out");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     this.setState({
@@ -76,13 +78,9 @@ export class MainView extends React.Component {
     const { movies, user } = this.state;
     
     return (
+
       <Router>
-        {/* 
-        <Row>
-          <Col>
-            <Button onClick={() => {this.onLoggedOut()}}>Logout</Button>
-          </Col>
-        </Row> */}
+        <Navbar user={user} onLoggedOut={ () => {this.onLoggedOut();} } />
 
         {/* Home Route */}
         <Row className="main-view justify-content-md-center">
