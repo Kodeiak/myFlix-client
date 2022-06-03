@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 import "./login-view.scss";
-import { RegistrationView } from "../registration-view/registration-view";
 
 export function LoginView(props) {
   const [ username, setUsername ] = useState(""); // first value is current state. second value is method (function) to update state. initial state is set to ""
