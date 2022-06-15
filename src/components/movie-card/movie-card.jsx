@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Image } from "react-bootstrap";
 
 import { Link } from "react-router-dom";
 
@@ -9,14 +9,18 @@ import "./movie-card.scss";
 export class MovieCard extends React.Component {
   render() {
     const { movieData } = this.props;
+    const url = "http://localhost:1234"
+    const image = "movie-poster.jpg";
     // console.log(movieData);
 
     return (
       <Card className="movie-card">
-        {/* <Card.Img variant="top" src={movieData.imagePath} /> */}
+        {/* <Card.Img fluid="true" crossOrigin="anonymous" className="text-center" variant="top" src={movieData.imagePath} width={100} height={300} /> */}
         <Card.Body>
+          {/* <Image src="../heart-empty.a93ca4aa.png" className="fav-icon" /> */}
           <Card.Title>{movieData.title}</Card.Title>
           {/* <Card.Text>{movieData.description}</Card.Text> */}
+
           <Link to={`/movies/${movieData._id}`}>
             <Button variant="link">Open</Button>
           </Link>

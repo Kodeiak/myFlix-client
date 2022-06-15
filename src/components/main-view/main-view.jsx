@@ -13,6 +13,7 @@ import { MovieView } from "../movie-view/movie-view";
 import { Navbar } from "../navbar-view/navbar-view";
 import { GenreView } from "../genre-view/genre-view";
 import { DirectorView } from "../director-view/director-view";
+import { ProfileView } from "../profile-view/profile-view";
 
 
 // create and render MainView class component from React.Component
@@ -22,13 +23,15 @@ export class MainView extends React.Component {
     super(); // call the constructor of parent class React.Component
     this.state = {
       movies: [],
-      user: null
+      user: null,
+      userData: null
     };
   }
 
   // get movie list
   componentDidMount() {
     let accessToken = localStorage.getItem("token");
+    // let user = localStorage.getItem("user");
     if (accessToken !== null) {
       this.setState({
         user: localStorage.getItem("user")
@@ -36,27 +39,6 @@ export class MainView extends React.Component {
       this.getMovies(accessToken);
     }
   };
-
-  // update user state to logged in user
-  onLoggedIn(authData) {
-    console.log(authData);
-    this.setState({
-      user: authData.user.username
-    });
-
-    localStorage.setItem("token", authData.token);
-    localStorage.setItem("user", authData.user.username);
-    this.getMovies(authData.token);
-  }
-
-  onLoggedOut() {
-    console.log("signing out");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    this.setState({
-      user: null
-    });
-  }
 
   getMovies(token) {
     axios.get("https://myflixdb-kodeiak.herokuapp.com/movies", {
@@ -75,10 +57,32 @@ export class MainView extends React.Component {
     });
   }
 
+  // update user state to logged in user
+  onLoggedIn(authData) {
+    console.log(authData);
+    this.setState({
+      user: authData.user.username,
+      userData: authData.user
+    });
+
+    localStorage.setItem("token", authData.token);
+    localStorage.setItem("user", authData.user.username);
+    this.getMovies(authData.token);
+    // this.getUser(authData.token, authData.user.username);
+  }
+
+  onLoggedOut() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    this.setState({
+      user: null
+    });
+  }
+
   render() {
     // object destruction same as: const movies = this.state.movies;
     const { movies, user } = this.state;
-    
+
     return (
 
       <Router>
@@ -145,6 +149,8 @@ export class MainView extends React.Component {
               </Col>
             )
           }} />
+
+          {/* Director View */}
           <Route path="/directors/:name" render={({ match }) => {
             // if there is no user, render LoginView
             if (!user) return
@@ -166,11 +172,15 @@ export class MainView extends React.Component {
           }} />
 
           {/* Profile */}
-          <Route path={`/users/${user}`} render={({history}) => {
-            if (!user) return <Redirect to="/" />
-            return <Col>
-              {/* <ProfileView user={user} onBackClick={() => history.goBack()} /> */}
-            </Col>
+          <Route path={`/users/${user}`} 
+            render={({history}) => {
+              if (!user) return <Redirect to="/" />
+              return <Col md={12}>
+                <ProfileView 
+                  user={user}
+                  movieData={movies}
+                />
+              </Col>
           }} />
         </Row>
       </Router>

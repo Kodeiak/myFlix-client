@@ -38,7 +38,7 @@ export function Navbar(props) {
         <NavbarCollapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <NavLink href="/" >Home</NavLink>
-            <NavLink href="/profile/${user}">Profile</NavLink>
+            <NavLink href={`/users/${user}`}>Profile</NavLink>
             <NavLink href="/" onClick={ () =>{ onLoggedOut(); }} >Sign Out</NavLink>
           </Nav>
         </NavbarCollapse>
