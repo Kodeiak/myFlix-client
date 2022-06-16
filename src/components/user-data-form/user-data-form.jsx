@@ -49,6 +49,7 @@ export function UserDataForm(props) {
   // render() {
   const { username, password, email, birthday } = props;
   const bday = new Date(birthday);
+  // console.log(bday.getMonth() + "/" + bday.getDay() + "/" + bday.getFullYear());
 
   return (
     <Card>

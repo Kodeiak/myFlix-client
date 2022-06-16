@@ -13,6 +13,7 @@ export function ProfileView(props) {
   const { user, movieData } = props;
 
   const [ userData, setUserData ] = useState("");
+  const [ favoriteMovies, setFavoriteMovies ] = useState([""]);
   // const [ password, setPassword ] = useState("");
   // const [ email, setEmail ] = useState("");
   // const [ birthday, setBirthday ] = useState("");
@@ -24,8 +25,15 @@ export function ProfileView(props) {
 
   useEffect(() => {
     let accessToken = localStorage.getItem("token");
+    // console.log("did mount", accessToken, user);
     getUser(accessToken, user);
   }, []);
+
+  useEffect(() => {
+    // console.log("didUpdate", userData);
+    setFavoriteMovies(movieData.filter( m => userData.favoriteMovies.indexOf(m._id) > -1));
+    // console.log(movieData, favoriteMovies);
+  }, [userData])
 
   getUser = (token, user) => {
     axios.get(`https://myflixdb-kodeiak.herokuapp.com/users/${user}`, {
@@ -35,6 +43,7 @@ export function ProfileView(props) {
     })
     .then(response => {
       setUserData(response.data);
+      // console.log(response.data);
     })
     .catch(function (error) {
       console.log(error);
@@ -66,17 +75,19 @@ export function ProfileView(props) {
     // form validation - ensure data is in correct format
 
   // allow users to remove favorite movies
- 
 
-  let favorites = movieData.filter( m => userData.favoriteMovies.includes(m._id))
-  
-  let favoriteCards = favorites.map( m => (
+   
+  let favoriteCards = favoriteMovies.map( m => (
     <Col md={3} key={m._id}> 
       <MovieCard movieData={m} />
     </Col>
   ))  
 
+  if (!userData) {
+    return <div>Loading...</div>
+  }
   return (
+
     <Container>
       <UserDataForm username={userData.username} password={userData.password} email={userData.email}  birthday={userData.birthday} handleSubmit={handleSubmit} />
 
@@ -91,5 +102,4 @@ export function ProfileView(props) {
       </Row>
     </Container>
   )
-  // }
 }
