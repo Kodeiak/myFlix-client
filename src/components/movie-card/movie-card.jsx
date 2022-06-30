@@ -9,13 +9,13 @@ import "./movie-card.scss";
 export class MovieCard extends React.Component {
   render() {
     const { movieData } = this.props;
-    const url = "http://localhost:1234"
-    const image = "movie-poster.jpg";
-    // console.log(movieData);
+    // const url = "http://localhost:1234"
+    // const image = "/image.jpg";
+    console.log(movieData);
 
     return (
       <Card className="movie-card">
-        {/* <Card.Img fluid="true" crossOrigin="anonymous" className="text-center" variant="top" src={movieData.imagePath} width={100} height={300} /> */}
+        {/* <Card.Img crossOrigin="anonymous" className="text-center" variant="top" src={movieData.imagePath} width={100} height={300} /> */}
         <Card.Body>
           {/* <Image src="../heart-empty.a93ca4aa.png" className="fav-icon" /> */}
           <Card.Title>{movieData.title}</Card.Title>

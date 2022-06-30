@@ -33,7 +33,7 @@ export function ProfileView(props) {
     // console.log("didUpdate", userData);
     setFavoriteMovies(movieData.filter( m => userData.favoriteMovies.indexOf(m._id) > -1));
     // console.log(movieData, favoriteMovies);
-  }, [userData])
+  }, [userData]);
 
   getUser = (token, user) => {
     axios.get(`https://myflixdb-kodeiak.herokuapp.com/users/${user}`, {

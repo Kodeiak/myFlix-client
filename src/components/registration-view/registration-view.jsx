@@ -9,7 +9,6 @@ export function RegistrationView(props) {
   const [ email, setEmail ] = useState("");
   const [ birthday, setBirthday ] = useState("");
 
-  // hooks
   const [ usernameErr, setUsernameErr ] = useState("");
   const [ passwordErr, setPasswordErr ] = useState("");
   const [ emailErr, setEmailErr ] = useState("");

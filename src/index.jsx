@@ -1,17 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { MainView } from "./components/main-view/main-view";
 import Container from "react-bootstrap/Container";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import moviesApp from "./reducers/reducers";
+import { devToolsEnhancer } from "redux-devtools-extension";
 
+// no {} necessary as MainView is default export from main-view
+import MainView from "./components/main-view/main-view";
 import "./index.scss";
+
+const store = createStore(moviesApp, devToolsEnhancer());
 
 // create main component
 class MyFlixApplication extends React.Component {
   render() {
     return (
-      <Container fluid className="login-form">
-        <MainView />
-      </Container>
+      <Provider store={store}>
+        <Container fluid className="login-form">
+          <MainView />
+        </Container>
+      </Provider>
     );
   }
 }
