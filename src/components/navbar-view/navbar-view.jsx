@@ -4,7 +4,7 @@ import { Container, Nav, Navbar, NavLink } from "react-bootstrap";
 import NavbarCollapse from "react-bootstrap/esm/NavbarCollapse";
 import NavbarToggle from "react-bootstrap/esm/NavbarToggle";
 
-export function Navbar(props) {
+export function NavbarView(props) {
   const { user, onLoggedOut } = props;
 
   if (!user) return (    
