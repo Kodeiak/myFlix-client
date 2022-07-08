@@ -35,7 +35,7 @@ export function ProfileView(props) {
     // console.log(movieData, favoriteMovies);
   }, [userData]);
 
-  getUser = (token, user) => {
+  function getUser(token, user) {
     axios.get(`https://myflixdb-kodeiak.herokuapp.com/users/${user}`, {
       headers: {
         Authorization: `Bearer ${token}`
