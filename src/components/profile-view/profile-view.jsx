@@ -50,7 +50,7 @@ export function ProfileView(props) {
     });
   }  
 
-  handleSubmit = e =>  {
+  function handleSubmit()  {
     e.preventDefault();
     console.log("this will send post request");
     // axios.post("https://myflixdb-kodeiak.herokuapp.com/users", {
