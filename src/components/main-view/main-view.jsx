@@ -16,24 +16,37 @@ import { NavbarView } from "../navbar-view/navbar-view";
 import { GenreView } from "../genre-view/genre-view";
 import { DirectorView } from "../director-view/director-view";
 import { ProfileView } from "../profile-view/profile-view";
-
-// #0
-import { setMovies } from "../../actions/actions";
-
 import MoviesList from "../movies-list/movies-list";
-// #1
 
-// #2
+import { setMovies, setUser } from "../../actions/actions";
+
 // create and render MainView class component from React.Component
 export class MainView extends React.Component { 
   
-  constructor() {
-    super(); // call the constructor of parent class React.Component
-    // #3 movie state removed
-    this.state = {
-      user: null,
-      userData: null
-    };
+  // constructor() {
+  //   super(); // call the constructor of parent class React.Component
+  //   // #3 movie and user state removed
+  //   // this.state = {
+  //   //   // user: null,
+  //   //   // userData: null
+  //   // };
+  // }
+
+  // update user state to logged in user
+  onLoggedIn(authData) {
+    this.props.setUser(authData.user.username);
+    localStorage.setItem("token", authData.token);
+    localStorage.setItem("user", authData.user.username);
+    // setUser
+    // const { setUser } = this.props;
+    // setUser(authData.user.username);
+    // this.props.getUserData(authData.user);
+    // this.setState({
+    //   // user: authData.user.username,
+    //   userData: authData.user
+    // });
+    this.getMovies(authData.token);
+    // this.getUser(authData.token, authData.user.username);
   }
 
   // get movie list
@@ -41,10 +54,11 @@ export class MainView extends React.Component {
     let accessToken = localStorage.getItem("token");
     // let user = localStorage.getItem("user");
     if (accessToken !== null) {
-      this.setState({
-        user: localStorage.getItem("user")
-      });
+      // this.setState({
+      //   user: localStorage.getItem("user")
+      // });
       this.getMovies(accessToken);
+      this.props.setUser(localStorage.getItem("user"));
     }
   };
 
@@ -66,33 +80,16 @@ export class MainView extends React.Component {
     });
   }
 
-  // update user state to logged in user
-  onLoggedIn(authData) {
-    console.log(authData);
-    this.setState({
-      user: authData.user.username,
-      userData: authData.user
-    });
-
-    localStorage.setItem("token", authData.token);
-    localStorage.setItem("user", authData.user.username);
-    this.getMovies(authData.token);
-    // this.getUser(authData.token, authData.user.username);
-  }
-
   onLoggedOut() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    this.setState({
-      user: null
-    });
+    // use redux
+    this.props.setUser("");
   }
 
   render() {
-    // #5
     // object destruction same as: const movies = this.state.movies;
-    let { movies } = this.props;
-    let { user } = this.state;
+    let { movies, user } = this.props;
 
     return (
 
@@ -113,11 +110,6 @@ export class MainView extends React.Component {
 
             // #6
             return <MoviesList movies={movies} />
-            // return movies.map(m => (
-            //   <Col md={3} key={m._id}>
-            //     <MovieCard movieData={m} />
-            //   </Col>
-            // ))
           }} />
 
           <Route path="/register" render={() => {
@@ -185,9 +177,15 @@ export class MainView extends React.Component {
           }} />
 
           {/* Profile */}
-          <Route path={`/users/${user}`} 
-            render={({history}) => {
-              if (!user) return <Redirect to="/" />
+          {console.log("profile", user)}
+          <Route 
+            path={"/users/:user"} 
+            render={({ match, history }) => {
+              if (!user) return (
+                <Col>
+                    <LoginView onLoggedIn={ user => this.onLoggedIn(user)} />
+                </Col>
+                )
               return <Col md={12}>
                 <ProfileView 
                   user={user}
@@ -203,12 +201,16 @@ export class MainView extends React.Component {
 }
 
 // #7
-let mapStateToProps = state => {
-  return {movies: state.movies }
-}
+let mapStateToProps = (state) => {
+  return {
+    movies: state.movies,
+    user: state.user
+    // userData: state.userData
+   }
+};
 
 // #8
-export default connect(mapStateToProps, { setMovies } )(MainView);
+export default connect(mapStateToProps, { setMovies, setUser } )(MainView);
 
 MainView.propTypes = {
   movies: propTypes.array,
