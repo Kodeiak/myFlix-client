@@ -2,40 +2,48 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import { Container, Row, Col, Button } from "react-bootstrap";
+import { connect } from "react-redux";
 
 import { MovieCard } from "../movie-card/movie-card";
 import { UserDataForm } from "../user-data-form/user-data-form";
 
+import { setUser } from "../../actions/actions";
+
 import "./profile-view.scss";
 
-export function ProfileView(props) {
+export function ProfileView(match, props) {
 
-  const { user, movieData } = props;
+  console.log("match", match, "props", props);
+  // const { user, movieData } = props;
+  const { movieData, favorites } = match;
+  const user = localStorage.getItem("user");
+  const token = localStorage.getItem("token");
 
   const [ userData, setUserData ] = useState("");
   const [ favoriteMovies, setFavoriteMovies ] = useState([""]);
-  // const [ password, setPassword ] = useState("");
-  // const [ email, setEmail ] = useState("");
-  // const [ birthday, setBirthday ] = useState("");
-  
-  // const [ usernameErr, setUsernameErr ] = useState("");
-  // const [ passwordErr, setPasswordErr ] = useState("");
-  // const [ emailErr, setEmailErr ] = useState("");
-  // const [ birthdayErr, setBirthdayErr ] = useState("");
 
+  const { username, birthday, email, password } = userData;
+
+  // similar to componentDidMount, once per render
   useEffect(() => {
     let accessToken = localStorage.getItem("token");
-    // console.log("did mount", accessToken, user);
+    // this.props.setUser(localStorage.getItem("user"));
+    console.log("did mount", accessToken, user);
     getUser(accessToken, user);
   }, []);
 
+  // similar to componentDidUpdate
   useEffect(() => {
-    // console.log("didUpdate", userData);
+    // don't run unless userData has value
+    if (!userData) {
+      return
+    }
+    console.log("didUpdate", userData);
     setFavoriteMovies(movieData.filter( m => userData.favoriteMovies.indexOf(m._id) > -1));
-    // console.log(movieData, favoriteMovies);
+    console.log(movieData, favoriteMovies);
   }, [userData]);
 
-  function getUser(token, user) {
+  const getUser = (token, user) => {
     axios.get(`https://myflixdb-kodeiak.herokuapp.com/users/${user}`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -43,57 +51,80 @@ export function ProfileView(props) {
     })
     .then(response => {
       setUserData(response.data);
-      // console.log(response.data);
+      console.log("get user", response.data, userData);
     })
     .catch(function (error) {
       console.log(error);
     });
   }  
 
-  function handleSubmit()  {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    const newUserData = {
+      ...userData,
+      username: e.target.username.value,
+      email: e.target.email.value,
+      password: e.target.password.value,
+      birthday: e.target.birthday.value
+    }
+    console.log(newUserData);
     console.log("this will send post request");
-    // axios.post("https://myflixdb-kodeiak.herokuapp.com/users", {
-    //   username: username,
-    //   password: password,
-    //   email: email,
-    //   birthday: birthday
-    // })
-    // .then(response => {
-    //   const data = response.data;
-    //   console.log(data);
-    //   alert("User details have been successfully updated.");
-    //   // render login screen
-    //   window.open("/", "_self"); // "_self" opens new page on current tab
-    // })
-    // .catch ( e => {
-    //   alert("Update failed");
-    // });
-  }
-  // allow user to change their data (send post/put request upon submission)
-    // onSubmit
-    // form validation - ensure data is in correct format
 
+    axios.put(`https://myflixdb-kodeiak.herokuapp.com/users/${user}`, newUserData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      const data = response.data;
+      console.log(data);
+      localStorage.setItem("user", data.username);
+      alert("User details have been successfully updated.");
+    })
+    .catch ( e => {
+      alert("Update failed");
+    });
+  }
+
+  const handleDelete = () => {
+    console.log("this will delete profile");
+    axios.delete(`https://myflixdb-kodeiak.herokuapp.com/users/${user}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      // const data = response.data;
+      // console.log(data);
+      localStorage.setItem("user", "");
+      alert("User profile has been successfully deleted.");
+      location.reload();
+    })
+    .catch ( e => {
+      alert("Update failed");
+    });
+  }
   // allow users to remove favorite movies
 
    
   let favoriteCards = favoriteMovies.map( m => (
     <Col md={3} key={m._id}> 
-      <MovieCard movieData={m} />
+      <MovieCard movieData={m} favorites={favorites} />
     </Col>
   ))  
 
   if (!userData) {
     return <div>Loading...</div>
   }
+
   return (
 
     <Container>
-      <UserDataForm username={userData.username} password={userData.password} email={userData.email}  birthday={userData.birthday} handleSubmit={handleSubmit} />
+      <UserDataForm username={userData.username} password={userData.password} email={userData.email}  birthday={userData.birthday} userData={userData} handleSubmit={handleSubmit} />
 
       <Row>
         <Col>
-          <Button className="delete-btn">Delete Profile</Button> 
+          <Button className="delete-btn" onClick={handleDelete}>Delete Profile</Button> 
         </Col>
       </Row>
 
@@ -103,3 +134,14 @@ export function ProfileView(props) {
     </Container>
   )
 }
+
+// making states available as props in the component
+const mapStateToProps = state => {  
+  return {
+    user: state.user
+  }
+}
+
+export default connect(mapStateToProps, { setUser } )(ProfileView);
+
+// ProfileView.propTypes

@@ -11,7 +11,7 @@ const mapStateToProps = state => {
 };
 
 function MoviesList(props) {
-  const { movies, visibilityFilter } = props;
+  const { user, movies, visibilityFilter, favorites } = props;
   let filteredMovies = movies;
 
   if (visibilityFilter !== "") {
@@ -26,7 +26,7 @@ function MoviesList(props) {
     </Col>
     {filteredMovies.map(m => (
     <Col md={3} key={m._id}>
-      <MovieCard movieData={m} />
+      <MovieCard movieData={m} favorites={favorites} />
     </Col>
   ))}
   </>;
