@@ -15,7 +15,7 @@ export function ProfileView(match, props) {
 
   console.log("match", match, "props", props);
   // const { user, movieData } = props;
-  const { movieData } = match;
+  const { movieData, favorites } = match;
   const user = localStorage.getItem("user");
   const token = localStorage.getItem("token");
 
@@ -109,7 +109,7 @@ export function ProfileView(match, props) {
    
   let favoriteCards = favoriteMovies.map( m => (
     <Col md={3} key={m._id}> 
-      <MovieCard movieData={m} />
+      <MovieCard movieData={m} favorites={favorites} />
     </Col>
   ))  
 

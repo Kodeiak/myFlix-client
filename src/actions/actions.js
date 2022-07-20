@@ -7,6 +7,7 @@ export const DELETE_USER = "DELETE_USER";
 export const SET_USER = "SET_USER";
 export const GET_USER_DATA = "GET_USER_DATA";
 export const UPDATE_USER = "UPDATE_USER";
+export const SET_FAVORITES = "SET_FAVORITES";
 export const ADD_FAVORITE = "ADD_FAVORITE";
 export const REMOVE_FAVORITE = "REMOVE_FAVORITE";
 
@@ -44,6 +45,13 @@ export function setUser(value) {
 export function getUserData(value) {
   return {
     type: GET_USER_DATA,
+    value
+  };
+}
+
+export function setFavorites(value) {
+  return {
+    type: SET_FAVORITES,
     value
   };
 }

@@ -18,35 +18,18 @@ import { DirectorView } from "../director-view/director-view";
 import { ProfileView } from "../profile-view/profile-view";
 import MoviesList from "../movies-list/movies-list";
 
-import { setMovies, setUser } from "../../actions/actions";
+import { setMovies, setUser, setFavorites } from "../../actions/actions";
 
 // create and render MainView class component from React.Component
 export class MainView extends React.Component { 
   
-  // constructor() {
-  //   super(); // call the constructor of parent class React.Component
-  //   // #3 movie and user state removed
-  //   // this.state = {
-  //   //   // user: null,
-  //   //   // userData: null
-  //   // };
-  // }
-
   // update user state to logged in user
   onLoggedIn(authData) {
     this.props.setUser(authData.user.username);
     localStorage.setItem("token", authData.token);
     localStorage.setItem("user", authData.user.username);
-    // setUser
-    // const { setUser } = this.props;
-    // setUser(authData.user.username);
-    // this.props.getUserData(authData.user);
-    // this.setState({
-    //   // user: authData.user.username,
-    //   userData: authData.user
-    // });
     this.getMovies(authData.token);
-    // this.getUser(authData.token, authData.user.username);
+    this.getFavorites(authData.token);
   }
 
   // get movie list
@@ -59,6 +42,7 @@ export class MainView extends React.Component {
       // });
       this.getMovies(accessToken);
       this.props.setUser(localStorage.getItem("user"));
+      this.getFavorites(accessToken);
     }
   };
 
@@ -80,16 +64,32 @@ export class MainView extends React.Component {
     });
   }
 
+  getFavorites(token) {
+    console.log("get favorites");
+    let user = this.props.user;
+    axios.get(`https://myflixdb-kodeiak.herokuapp.com/users/${user}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then( response => {
+        this.props.setFavorites(response.data.favoriteMovies);
+        console.log(response.data.favoriteMovies);
+      })
+      .catch( e => console.log(e));
+  }
+
   onLoggedOut() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    // use redux
     this.props.setUser("");
   }
 
   render() {
     // object destruction same as: const movies = this.state.movies;
-    let { movies, user } = this.props;
+    let { movies, user, favorites } = this.props;
+
+    console.log(`favorites are ${favorites}`);
 
     return (
 
@@ -109,7 +109,7 @@ export class MainView extends React.Component {
             if (movies.length === 0) return <div className="main-view" />;
 
             // #6
-            return <MoviesList movies={movies} />
+            return <MoviesList movies={movies} user={user} favorites={favorites} />
           }} />
 
           <Route path="/register" render={() => {
@@ -177,7 +177,6 @@ export class MainView extends React.Component {
           }} />
 
           {/* Profile */}
-          {console.log("profile", user)}
           <Route 
             path={"/users/:user"} 
             render={({ match, history }) => {
@@ -190,6 +189,7 @@ export class MainView extends React.Component {
                 <ProfileView 
                   user={user}
                   movieData={movies}
+                  favorites={favorites}
                 />
               </Col>
           }} />
@@ -204,13 +204,14 @@ export class MainView extends React.Component {
 let mapStateToProps = (state) => {
   return {
     movies: state.movies,
+    favorites: state.favorites,
     user: state.user
     // userData: state.userData
    }
 };
 
 // #8
-export default connect(mapStateToProps, { setMovies, setUser } )(MainView);
+export default connect(mapStateToProps, { setMovies, setUser, setFavorites } )(MainView);
 
 MainView.propTypes = {
   movies: propTypes.array,
