@@ -10,7 +10,6 @@ import { Row, Col, } from "react-bootstrap";
 
 import { LoginView } from "../login-view/login-view";
 import { RegistrationView } from "../registration-view/registration-view";
-import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { NavbarView } from "../navbar-view/navbar-view";
 import { GenreView } from "../genre-view/genre-view";
@@ -32,20 +31,6 @@ export class MainView extends React.Component {
     this.getFavorites(authData.token);
   }
 
-  // get movie list
-  componentDidMount() {
-    let accessToken = localStorage.getItem("token");
-    // let user = localStorage.getItem("user");
-    if (accessToken !== null) {
-      // this.setState({
-      //   user: localStorage.getItem("user")
-      // });
-      this.getMovies(accessToken);
-      this.props.setUser(localStorage.getItem("user"));
-      this.getFavorites(accessToken);
-    }
-  };
-
   getMovies(token) {
     axios.get("https://myflixdb-kodeiak.herokuapp.com/movies", {
       headers: {
@@ -53,10 +38,6 @@ export class MainView extends React.Component {
       }
     })
     .then(response => {
-      // assign the result to the state
-      // this.setState({
-      //   movies: response.data
-      // });
       this.props.setMovies(response.data);
     })
     .catch(function (error) {
@@ -79,6 +60,16 @@ export class MainView extends React.Component {
       .catch( e => console.log(e));
   }
 
+    // get movie list
+    componentDidMount() {
+      let accessToken = localStorage.getItem("token");
+      if (accessToken !== null) {
+        this.getMovies(accessToken);
+        this.props.setUser(localStorage.getItem("user"));
+        this.getFavorites(accessToken);
+      }
+    };
+
   onLoggedOut() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -88,8 +79,6 @@ export class MainView extends React.Component {
   render() {
     // object destruction same as: const movies = this.state.movies;
     let { movies, user, favorites } = this.props;
-
-    console.log(`favorites are ${favorites}`);
 
     return (
 
@@ -206,7 +195,6 @@ let mapStateToProps = (state) => {
     movies: state.movies,
     favorites: state.favorites,
     user: state.user
-    // userData: state.userData
    }
 };
 
