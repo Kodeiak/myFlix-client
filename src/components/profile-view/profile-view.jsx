@@ -11,18 +11,14 @@ import { setUser } from "../../actions/actions";
 
 import "./profile-view.scss";
 
-export function ProfileView(match, props) {
+export function ProfileView(match) {
 
-  console.log("match", match, "props", props);
-  // const { user, movieData } = props;
   const { movieData, favorites } = match;
   const user = localStorage.getItem("user");
   const token = localStorage.getItem("token");
 
   const [ userData, setUserData ] = useState("");
   const [ favoriteMovies, setFavoriteMovies ] = useState([""]);
-
-  const { username, birthday, email, password } = userData;
 
   // similar to componentDidMount, once per render
   useEffect(() => {
@@ -93,9 +89,7 @@ export function ProfileView(match, props) {
         Authorization: `Bearer ${token}`
       }
     })
-    .then(response => {
-      // const data = response.data;
-      // console.log(data);
+    .then(() => {
       localStorage.setItem("user", "");
       alert("User profile has been successfully deleted.");
       location.reload();
